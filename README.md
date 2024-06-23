@@ -49,9 +49,9 @@ project-root/
 ~~~
 ## Setup Instructions
 ***
-`git clone <repository-url>`
+`git clone https://github.com/Yuda4/Anomaly_Detection.git`
 
-`cd anomaly_detection`
+`cd Anomaly_Detection`
 
 ## Running the Project
 ***
