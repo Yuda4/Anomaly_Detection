@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: cloudtrail
+      POSTGRES_HOST: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./utils/database:/docker-entrypoint-initdb.d
+    networks:
+      - cloudtrail_network
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - cloudtrail_network
+
+  app:
+    build:
+      context: ./
+      dockerfile: app/Dockerfile
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_QUEUE_NAME: cloudtrail_events
+      RABBITMQ_RESPONSE_QUEUE_NAME: response_cloudtrail_events
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - rabbitmq
+    networks:
+      - cloudtrail_network
+
+  anomaly_worker:
+    build:
+      context: ./
+      dockerfile: ./anomaly_worker/Dockerfile
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_QUEUE_NAME: cloudtrail_events
+      DATABASE_URL: postgresql://user:password@db:5432/cloudtrail
+    depends_on:
+      - db
+      - rabbitmq
+    networks:
+      - cloudtrail_network
+    deploy:
+      mode: replicated
+      replicas: 3
+
+networks:
+  cloudtrail_network:
+    driver: bridge
+
+volumes:
+  db_data:
