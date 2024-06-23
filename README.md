@@ -1,5 +1,5 @@
 ## Anomaly Detection Project
-***
+
 In this project I've created a system that receives Cloudtrail events and assesses them for
 anomalies by implementing workers that consumes messages from a RabbitMQ queue, processes them, and sends back responses. The worker is designed to handle database operations using SQLAlchemy and ensures proper acknowledgment of messages to avoid processing errors and data inconsistencies. The Flask framework is used for building the web application.
 
@@ -10,7 +10,7 @@ Cloudtrail Producer ~~->~~ Ingestion Service ~~->~~ Queue ~~->~~ Anomaly Workers
 Here are detailed instructions and prerequisites for setting up and running this project.
 
 ## Prerequisites
-***
+
 1. **Docker and Docker Compose**: Ensure you have Docker and Docker Compose installed on your machine.
    - [Install Docker](https://docs.docker.com/engine/install/)
    - [Install Docker Compose](https://docs.docker.com/compose/install/)
@@ -22,7 +22,7 @@ Here are detailed instructions and prerequisites for setting up and running this
    - [Install Python](https://www.python.org/downloads/)
 
 ## Project Structure
-***
+
 ~~~
 project-root/
 │
@@ -48,13 +48,13 @@ project-root/
 └── README.md
 ~~~
 ## Setup Instructions
-***
+
 `git clone https://github.com/Yuda4/Anomaly_Detection.git`
 
 `cd Anomaly_Detection`
 
 ## Running the Project
-***
+
 1. Build and Start the Services:
     - Open a terminal on project-root location
     - Run the build command: `docker-compose up --build`
@@ -114,35 +114,35 @@ project-root/
    - Sockets published, delivered
    - etc.
 
-##Project Overview
-***
-####/anomaly_worker/worker.py
+## Project Overview
+
+#### /anomaly_worker/worker.py
 Establishing RabbitMQ connection & listens to a RabbitMQ queue, `cloudtrail_events`, for incoming events, performs anomaly detection, querying with the database & sends responses based on the anomaly detection outcome.
 
-####/app/app.py
+#### /app/app.py
 A Flask application that exposes an endpoint `/ingest` for receiving events, validates required keys, publishing them to a RabbitMQ queue - `cloudtrail_events`, handling & return responses from worker.py.
 
-####utils/database/database_utils.py
+#### utils/database/database_utils.py
 Manages database connections, SQLAlchemy engine with connection pooling, session handling and database operations - `check_event_exists`, `insert_anomaly`.
 
-####utils/database/init.sql
+#### utils/database/init.sql
 Initializes the `anomalies` table schema in PostgreSQL.
 
-####utils/queue/queue_utils.py
+#### utils/queue/queue_utils.py
 Provides utilities to manage RabbitMQ connections queue & channel, publish messages - `publish_event`, and handle responses - `send_response`.
 
 ***
-####Why use Flask?
+#### Why use Flask?
 
 Flask's simplicity, flexibility, and vibrant ecosystem make it an ideal choice for web development. Because Flask applications are lightweight, they remain fast and efficient, making them suitable for both small-scale projects and large, complex applications.
 
 With Flask, developers can integrate additional functionality such as routing, templating, and session management seamlessly, while extensions and libraries such as Flask-SQLAlchemy, Flask-RESTful, and Flask-JWT make it easy to add new functionalities. As a result of its flexibility, Flask can be used to build APIs, web services, and even full-stack web applications.
 ***
-####Why use RabbitMQ?
+#### Why use RabbitMQ?
 RabbitMQ stands out as a top choice for message queuing because of its reliability, flexibility, and rich features, making it perfect for managing communication in microservices and distributed systems.
 Key features include high-throughput and low-latency messaging, message durability, and delivery guarantees, ensuring reliability even in system failures.
 ***
-####Why use SQLAlchemy?
+#### Why use SQLAlchemy?
 SQLAlchemy is a powerful and flexible SQL toolkit and Object-Relational Mapping (ORM) library for Python.
 
 Easy to Use: SQLAlchemy provides a higher-level API for interacting with databases, making it easier to write and maintain database queries.
@@ -155,7 +155,7 @@ Flexibility: SQLAlchemy allows for the use of raw SQL when needed, giving you th
 ***
 
 
-####Choices and Considerations
+#### Choices and Considerations
 - Automatic Acknowledgment: Simplifies message handling by automatically acknowledging messages upon receipt.
 - SQLAlchemy ORM: Provides an efficient and maintainable way to interact with the database, abstracting away raw SQL operations.
 - Session Management: Ensures that database sessions are properly managed and closed.
